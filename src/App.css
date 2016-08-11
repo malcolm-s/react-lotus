@@ -1,0 +1,21 @@
+.sheet {
+  display: flex;
+}
+
+.column {
+  flex: 1;
+}
+
+.column__cell {
+  width: 5em;
+  height: 1.5em;
+  display: flex;
+  align-items: center;
+  border: 1px solid #eee;
+  padding: 0.25em;
+  justify-content: flex-end;
+}
+
+.column__cell--header {
+  background: #ddd;
+}
