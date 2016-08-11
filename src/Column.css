@@ -15,3 +15,7 @@
 .column__cell--header {
   background: #ddd;
 }
+
+.column__cell--selected {
+  background: #2ECC40;
+}
