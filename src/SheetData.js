@@ -10,7 +10,7 @@ export class SheetData {
             },
             {
                 reference: {
-                    x: 64,
+                    x: 15,
                     y: 1
                 },
                 value: 2
@@ -25,8 +25,14 @@ export class SheetData {
         ]
     }
 
-    getCellValue(x, y) {
+    getCell(x, y) {
         return this.cells
-            .reduce((prev, curr) => curr.reference.x === x && curr.reference.y === y ? curr.value : prev, undefined);
+            .reduce((prev, curr) => curr.reference.x === x && curr.reference.y === y ? curr: prev, undefined);        
+    }
+
+    getCellValue(x, y) {
+        const cell = this.getCell(x, y);
+        
+        return cell === undefined ? cell : cell.value;
     }
 }

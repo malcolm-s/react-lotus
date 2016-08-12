@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-
+import { classes, UNICODE_BLANK } from './Utils';
+import { LabelCell } from './LabelCell';
 import './Column.css';
-
-const UNICODE_BLANK = '\u00a0';
 
 export class Column extends Component {
   constructor(props) {
@@ -21,18 +20,12 @@ export class Column extends Component {
     this.setState({ rows });
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('receive', this.props);
-  }
-
   render() {
     return (
       <div className="column">
-        <LabelColumnCell label={this.props.header} />
+        <LabelCell label={this.props.header} />
         {this.state.rows.map((row, i) =>
-          this.props.isLabelColumn
-            ? <LabelColumnCell label={row.value} key={i} />
-            : <ValueColumnCell value={row.value} key={i} onClick={() => this.handleClick(i)} isSelected={row.isSelected} />
+            <ValueColumnCell value={row.value} key={i} onClick={() => this.handleClick(i)} isSelected={row.isSelected} />
         ) }
       </div>
     );
@@ -59,16 +52,6 @@ export class Column extends Component {
   }
 }
 
-class LabelColumnCell extends Component {
-  render() {
-    return (
-      <div className="column__cell column__cell--header">
-        {this.props.label || UNICODE_BLANK}
-      </div>
-    );
-  }
-}
-
 class ValueColumnCell extends Component {
   render() {
     const classNames = classes('column__cell column__cell--value', {
@@ -83,13 +66,7 @@ class ValueColumnCell extends Component {
   }
 }
 
-function classes(constant, conditional) {
-  const conditionalClasses = Object.keys(conditional)
-    .filter(key => conditional[key])
-    .join(' ');
 
-  return `${constant} ${conditionalClasses}`;
-}
 
 /*
 

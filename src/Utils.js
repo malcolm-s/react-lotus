@@ -11,3 +11,13 @@ export function range(n) {
 export function max(array) {
   return array.reduce((prev, curr) => curr > prev ? curr : prev);
 }
+
+export function classes(constant, conditional) {
+  const conditionalClasses = Object.keys(conditional)
+    .filter(key => conditional[key])
+    .join(' ');
+
+  return `${constant} ${conditionalClasses}`;
+}
+
+export const UNICODE_BLANK = '\u00a0';
