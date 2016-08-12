@@ -1,3 +1,8 @@
 .ValueCell--selected {
   background: #2ECC40;
 }
+
+.ValueCell__input {
+  width: 100%;
+  height: 100%;
+}

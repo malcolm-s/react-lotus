@@ -23,7 +23,9 @@ export class ValueCell extends Component {
 
     if (this.props.isEntered) {
         cellContent = <input 
-            type="text" 
+            type="text"
+            className="ValueCell__input"
+            ref={el => el ? el.focus() : undefined} 
             onChange={this.handleChange.bind(this)}
             onKeyUp={this.handleKeyUp.bind(this)} 
             onBlur={this.handleBlur.bind(this)} />
