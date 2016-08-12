@@ -5,6 +5,7 @@ import { ValueCell } from './ValueCell';
 export class ValueColumn extends Component {
   render() {
     const handleClick = this.props.onCellClick;
+    const handleExit = this.props.onCellExit;
 
     return (
       <div className="ValueColumn">
@@ -12,7 +13,9 @@ export class ValueColumn extends Component {
         {this.props.cells.map((cell, i) =>
             <ValueCell 
               key={i} 
-              onClick={() => handleClick(cell)} 
+              cell={cell} 
+              onClick={() => handleClick(cell)}
+              onExit={handleExit}
               value={cell.value} 
               isSelected={cell.isSelected}
               isEntered={cell.isEntered} />

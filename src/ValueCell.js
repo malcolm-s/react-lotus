@@ -26,7 +26,7 @@ export class ValueCell extends Component {
             type="text" 
             onChange={this.handleChange.bind(this)}
             onKeyUp={this.handleKeyUp.bind(this)} 
-            onBlur={this.handleExited.bind(this)} />
+            onBlur={this.handleBlur.bind(this)} />
     } else {
         cellContent =this.props.value || UNICODE_BLANK 
     }
@@ -44,11 +44,11 @@ export class ValueCell extends Component {
 
   handleKeyUp(e) {
       if (e.key === 'Enter') {
-          this.handleExited()
+          this.props.onExit(this.props.cell, this.state.value);
       }
   }
 
-  handleExited(e) {
-      console.log('exited', this.state.value)
+  handleBlur(e) {
+      this.props.onExit(this.props.cell, this.state.value);
   }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { range, max } from './Utils';
+import { range, max, referenceMatch } from './Utils';
 
 import { LabelColumn } from './LabelColumn';
 import { ValueColumn } from './ValueColumn';
@@ -15,7 +15,8 @@ export class Sheet extends Component {
       enteredCellReference: {}
     };
 
-    this.handleClick = this.handleClick.bind(this);
+    this.handleCellClick = this.handleCellClick.bind(this);
+    this.handleCellExit = this.handleCellExit.bind(this);
   }
 
   render() {
@@ -31,7 +32,8 @@ export class Sheet extends Component {
         key={i}
         cells={cells}
         header={x}
-        onCellClick={this.handleClick} />
+        onCellClick={this.handleCellClick}        
+        onCellExit={this.handleCellExit} />
     });
 
     return (
@@ -49,27 +51,33 @@ export class Sheet extends Component {
         reference: { x, y }
       };
 
-      cell.isSelected =
-        cell.reference.x === this.state.selectedCellReference.x
-        && cell.reference.y === this.state.selectedCellReference.y;
+      cell.isSelected = referenceMatch(cell.reference, this.state.selectedCellReference);
 
-      cell.isEntered =
-        cell.reference.x === this.state.enteredCellReference.x
-        && cell.reference.y === this.state.enteredCellReference.y;
+      cell.isEntered = referenceMatch(cell.reference, this.state.enteredCellReference);
 
       return cell;
     });
   }
 
-  handleClick(cell) {
-    if (cell.reference.x === this.state.selectedCellReference.x
-      && cell.reference.y === this.state.selectedCellReference.y) {
+  handleCellClick(cell) {
+    if (referenceMatch(cell.reference, this.state.selectedCellReference)) {
       this.setState({
-        enteredCellReference: cell.reference,
-        selectedCellReference: {}
+        enteredCellReference: cell.reference
       });
     } else {
-      this.setState({ selectedCellReference: cell.reference });
+      this.setState({ 
+        selectedCellReference: cell.reference,
+        enteredCellReference: {} 
+      });
     }
+  }
+
+  handleCellExit(cell, value) {
+    console.log('cell', cell);
+    console.log('value', value);
+    this.setState({
+      selectedCellReference: {},
+      enteredCellReference: {}
+    });
   }
 }

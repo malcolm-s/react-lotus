@@ -1,6 +1,6 @@
 export class SheetData {
-    get cells() {
-        return [
+    constructor() {        
+        this.cells = [
             {
                 reference: {
                     x: 1,
@@ -25,14 +25,18 @@ export class SheetData {
         ]
     }
 
+    setCellValue(reference, value) {
+
+    }
+
     getCell(x, y) {
         return this.cells
-            .reduce((prev, curr) => curr.reference.x === x && curr.reference.y === y ? curr: prev, undefined);        
+            .reduce((prev, curr) => curr.reference.x === x && curr.reference.y === y ? curr : prev, undefined);
     }
 
     getCellValue(x, y) {
         const cell = this.getCell(x, y);
-        
+
         return cell === undefined ? cell : cell.value;
     }
 }
