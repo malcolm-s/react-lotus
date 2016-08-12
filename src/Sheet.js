@@ -45,7 +45,8 @@ export class Sheet extends Component {
   }
 
   getColumnCells(x, yRange) {
-    // todo: move this up a layer so this component just gets the full list of cells
+    // todo: move this up a layer so this component just gets the full list of cells with selected/entered
+    // that component should manage the extending of cell state to include UI related things i.e. selected/entered
     return yRange.map(y => {
       let cell = this.props.data.getCell(x, y) || {
         reference: { x, y }
@@ -73,6 +74,7 @@ export class Sheet extends Component {
   }
 
   handleCellExit(cell, value) {
+    // todo: remove all this console logging
     console.log('cell', cell);
     console.log('value', value);
     this.setState({

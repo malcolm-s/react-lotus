@@ -14,6 +14,7 @@ export class ValueCell extends Component {
     }
 
     componentWillMount() {
+        // todo: consolidate this with constructor code or explain in comment
         this.setState({ value: this.props.cell.value || '' })
     }
 
@@ -23,6 +24,7 @@ export class ValueCell extends Component {
             'ValueCell--entered': this.props.isEntered
         });
 
+        // todo: refactor this into methods so it's less of an eyesore
         let cellContent;
 
         if (this.props.isEntered) {

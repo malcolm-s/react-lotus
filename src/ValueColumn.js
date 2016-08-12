@@ -4,6 +4,9 @@ import { ValueCell } from './ValueCell';
 
 export class ValueColumn extends Component {
   render() {
+    // todo: resolve this weird event handler binding logic - either use currying or think
+    // about moving code to not require all this passing through
+    // or at least make onClick work the same as onExit 
     const handleClick = this.props.onCellClick;
     const handleExit = this.props.onCellExit;
 
@@ -24,11 +27,3 @@ export class ValueColumn extends Component {
     );
   }
 }
-
-/*
-
-1 - on click -> highlight                 DONE
-2 - on click again -> change to input
-3 - on blur -> save value
-
-*/

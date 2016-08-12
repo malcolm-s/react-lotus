@@ -1,5 +1,6 @@
 export class SheetData {
     constructor() {
+        // todo: separate the populating of this data into a separate method so it's easier to move on from
         this._cellDict = {
             1: {
                 2: {
@@ -18,6 +19,7 @@ export class SheetData {
     }
 
     get cells() {
+        // todo: implement flatMap array operator to make this more readable and sane
         return Object.keys(this._cellDict)
             .map(x => Object.keys(this._cellDict[x])
                 .map(y => ({
@@ -32,15 +34,12 @@ export class SheetData {
     }
 
     setCellValue(reference, value) {
+        // todo: decide on (reference) vs (x, y) format of access methods
         const { x, y } = reference;
 
         if (!this._cellDict[x]) {
             this._cellDict[x] = {};
         }
-
-        // if (!this._cellDict[x][y]) {
-        //     this._cellDict[x][y] = {};
-        // }
 
         this._cellDict[x][y] = {
             value
@@ -53,6 +52,8 @@ export class SheetData {
         if (existing) {
             return {
                 reference: { x, y },
+                // todo: this line makes the structure of the data inconsistent with how it's consumed
+                // for now maybe better just to keep it same? cell.data.value rather than cell.value
                 ...existing
             }
         } else {
@@ -60,6 +61,7 @@ export class SheetData {
         }
     }
 
+    // todo: remove this, it's unused
     getCellValue(x, y) {
         const cell = this.getCell(x, y);
 
