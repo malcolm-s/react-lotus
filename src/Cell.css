@@ -1,7 +1,4 @@
-.column {
-}
-
-.column__cell {
+.Cell {
   width: 5em;
   height: 1.5em;
   display: flex;
@@ -9,12 +6,4 @@
   border: 1px solid #eee;
   padding: 0.25em;
   justify-content: flex-end;
-}
-
-.column__cell--header {
-  background: #ddd;
-}
-
-.column__cell--selected {
-  background: #2ECC40;
 }

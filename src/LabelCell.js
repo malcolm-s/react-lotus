@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { UNICODE_BLANK } from './Utils';
 
+import './Cell.css';
+import './LabelCell.css';
+
 export class LabelCell extends Component {
   render() {
     return (
-      <div className="column__cell column__cell--header">
+      <div className="Cell LabelCell">
         {this.props.label || UNICODE_BLANK}
       </div>
     );

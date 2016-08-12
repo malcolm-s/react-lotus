@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { range, max } from './Utils';
 
 import { LabelColumn } from './LabelColumn';
-import { Column } from './Column';
+import { ValueColumn } from './ValueColumn';
 
 import './Sheet.css';
 
@@ -24,13 +24,11 @@ export class Sheet extends Component {
     const yRange = range(max(data.cells.map(c => c.reference.y)));
 
     const valueColumns = xRange.map((x, i) => {
-      let values = yRange.map(y => data.getCellValue(x, y));
       const cells = this.getColumnCells(x, yRange);
 
-      return <Column
+      return <ValueColumn
                 key={i} 
                 cells={cells}
-                values={values} 
                 header={x} 
                 onCellClick={this.handleClick} />
     });
