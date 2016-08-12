@@ -1,37 +1,63 @@
 export class SheetData {
-    constructor() {        
-        this.cells = [
-            {
-                reference: {
-                    x: 1,
-                    y: 7
+    constructor() {
+        this._cellDict = {
+            1: {
+                2: {
+                    value: 3
                 },
-                value: 1
+                7: {
+                    value: 1
+                }
             },
-            {
-                reference: {
-                    x: 15,
-                    y: 1
-                },
-                value: 2
-            },
-            {
-                reference: {
-                    x: 1,
-                    y: 2
-                },
-                value: 3
+            15: {
+                1: {
+                    value: 1
+                }
             }
-        ]
+        }
+    }
+
+    get cells() {
+        return Object.keys(this._cellDict)
+            .map(x => Object.keys(this._cellDict[x])
+                .map(y => ({
+                    reference: {
+                        x,
+                        y
+                    },
+                    data: this._cellDict[x][y]
+                }))
+            )
+            .reduce((prev, curr) => prev.concat(curr), []);
     }
 
     setCellValue(reference, value) {
+        const { x, y } = reference;
 
+        if (!this._cellDict[x]) {
+            this._cellDict[x] = {};
+        }
+
+        if (!this._cellDict[x][y]) {
+            this._cellDict[x][y] = {};
+        }
+
+        this._cellDict[x][y] = {
+            value
+        };
     }
 
     getCell(x, y) {
-        return this.cells
-            .reduce((prev, curr) => curr.reference.x === x && curr.reference.y === y ? curr : prev, undefined);
+        const existing = (this._cellDict[x] || {})[y];
+
+        if (existing) {
+            return {
+                reference: { x, y },
+                ...existing
+            }
+        } else {
+            return undefined;
+        }
     }
 
     getCellValue(x, y) {

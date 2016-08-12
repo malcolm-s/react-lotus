@@ -79,5 +79,10 @@ export class Sheet extends Component {
       selectedCellReference: {},
       enteredCellReference: {}
     });
+    const { x, y } = cell.reference;
+
+    console.log('before', this.props.data.getCell(x, y));
+    this.props.data.setCellValue(cell.reference, value)
+    console.log('after', this.props.data.getCell(x, y));
   }
 }
