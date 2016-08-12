@@ -11,7 +11,8 @@ export class Sheet extends Component {
     super(props);
 
     this.state = {
-      selectedCellReference: {}
+      selectedCellReference: {},
+      enteredCellReference: {}
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -27,10 +28,10 @@ export class Sheet extends Component {
       const cells = this.getColumnCells(x, yRange);
 
       return <ValueColumn
-                key={i} 
-                cells={cells}
-                header={x} 
-                onCellClick={this.handleClick} />
+        key={i}
+        cells={cells}
+        header={x}
+        onCellClick={this.handleClick} />
     });
 
     return (
@@ -48,15 +49,27 @@ export class Sheet extends Component {
         reference: { x, y }
       };
 
-      cell.isSelected = 
+      cell.isSelected =
         cell.reference.x === this.state.selectedCellReference.x
-        && cell.reference.y === this.state.selectedCellReference.y
-      
+        && cell.reference.y === this.state.selectedCellReference.y;
+
+      cell.isEntered =
+        cell.reference.x === this.state.enteredCellReference.x
+        && cell.reference.y === this.state.enteredCellReference.y;
+
       return cell;
     });
   }
 
   handleClick(cell) {
-    this.setState({ selectedCellReference: cell.reference });
+    if (cell.reference.x === this.state.selectedCellReference.x
+      && cell.reference.y === this.state.selectedCellReference.y) {
+      this.setState({
+        enteredCellReference: cell.reference,
+        selectedCellReference: {}
+      });
+    } else {
+      this.setState({ selectedCellReference: cell.reference });
+    }
   }
 }
