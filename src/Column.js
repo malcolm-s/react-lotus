@@ -4,28 +4,14 @@ import { LabelCell } from './LabelCell';
 import './Column.css';
 
 export class Column extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      rows: []
-    };
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  componentWillMount() {
-    const rows = this.props.values.map(x => ({ value: x, isSelected: false }))
-
-    this.setState({ rows });
-  }
-
   render() {
+    const handleClick = this.props.onCellClick;
+
     return (
       <div className="column">
         <LabelCell label={this.props.header} />
-        {this.state.rows.map((row, i) =>
-            <ValueColumnCell value={row.value} key={i} onClick={() => this.handleClick(i)} isSelected={row.isSelected} />
+        {this.props.cells.map((cell, i) =>
+            <ValueColumnCell value={cell.value} key={i} onClick={() => handleClick(cell)} isSelected={cell.isSelected} />
         ) }
       </div>
     );

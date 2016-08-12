@@ -10,7 +10,9 @@ export class Sheet extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      selectedCellReference: {}
+    };
 
     this.handleClick = this.handleClick.bind(this);
   }
@@ -30,7 +32,7 @@ export class Sheet extends Component {
                 cells={cells}
                 values={values} 
                 header={x} 
-                onValueCellClick={this.handleClick} />
+                onCellClick={this.handleClick} />
     });
 
     return (
@@ -42,16 +44,21 @@ export class Sheet extends Component {
   }
 
   getColumnCells(x, yRange) {
+    // todo: move this up a layer so this component just gets the full list of cells
     return yRange.map(y => {
-      const cell = this.props.data.getCell(x, y);
-
-      return cell || {
+      let cell = this.props.data.getCell(x, y) || {
         reference: { x, y }
-      }
+      };
+
+      cell.isSelected = 
+        cell.reference.x === this.state.selectedCellReference.x
+        && cell.reference.y === this.state.selectedCellReference.y
+      
+      return cell;
     });
   }
 
-  handleClick() {
-
+  handleClick(cell) {
+    this.setState({ selectedCellReference: cell.reference });
   }
 }
