@@ -22,8 +22,8 @@ export class Sheet extends Component {
   render() {
     const data = this.props.data;
 
-    const xRange = range(max(data.cells.map(c => c.reference.x)));
-    const yRange = range(max(data.cells.map(c => c.reference.y)));
+    const xRange = range(max(data.cells.map(c => parseInt(c.reference.x))));
+    const yRange = range(max(data.cells.map(c => parseInt(c.reference.y))));
 
     const valueColumns = xRange.map((x, i) => {
       const cells = this.getColumnCells(x, yRange);
@@ -80,9 +80,11 @@ export class Sheet extends Component {
       enteredCellReference: {}
     });
     const { x, y } = cell.reference;
-
+    
+    console.log('data before', this.props.data);
     console.log('before', this.props.data.getCell(x, y));
     this.props.data.setCellValue(cell.reference, value)
     console.log('after', this.props.data.getCell(x, y));
+    console.log('data after', this.props.data);
   }
 }

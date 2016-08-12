@@ -38,9 +38,9 @@ export class SheetData {
             this._cellDict[x] = {};
         }
 
-        if (!this._cellDict[x][y]) {
-            this._cellDict[x][y] = {};
-        }
+        // if (!this._cellDict[x][y]) {
+        //     this._cellDict[x][y] = {};
+        // }
 
         this._cellDict[x][y] = {
             value
