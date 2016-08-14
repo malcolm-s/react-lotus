@@ -8,13 +8,10 @@ export class ValueCell extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            value: ''
-        }
+        this.state = {};
     }
 
     componentWillMount() {
-        // todo: consolidate this with constructor code or explain in comment
         this.setState({ value: this.props.cell.value || '' })
     }
 
@@ -24,40 +21,41 @@ export class ValueCell extends Component {
             'ValueCell--entered': this.props.isEntered
         });
 
-        // todo: refactor this into methods so it's less of an eyesore
-        let cellContent;
-
-        if (this.props.isEntered) {
-            cellContent = <input
-                type="text"
-                className="ValueCell__input"
-                value={this.state.value}
-                ref={el => el ? el.focus() : undefined}
-                onChange={this.handleChange.bind(this) }
-                onKeyUp={this.handleKeyUp.bind(this) }
-                onBlur={this.handleBlur.bind(this) } />
-        } else {
-            cellContent = this.props.value || UNICODE_BLANK
-        }
-
         return (
             <div className={classNames} onClick={this.props.onClick}>
-                {cellContent}
+                { this.props.isEntered
+                    ? this._renderInput()
+                    : this._renderValue() }
             </div>
         );
     }
 
-    handleChange(e) {
+    _renderValue() {
+        return this.props.value || UNICODE_BLANK;
+    }
+
+    _renderInput() {
+        return <input
+            type="text"
+            className="ValueCell__input"
+            value={this.state.value}
+            ref={el => el ? el.focus() : undefined}
+            onChange={this._handleChange.bind(this) }
+            onKeyUp={this._handleKeyUp.bind(this) }
+            onBlur={this._handleBlur.bind(this) } />;
+    }
+
+    _handleChange(e) {
         this.setState({ value: e.target.value });
     }
 
-    handleKeyUp(e) {
+    _handleKeyUp(e) {
         if (e.key === 'Enter') {
             this.props.onExit(this.props.cell, this.state.value);
         }
     }
 
-    handleBlur(e) {
+    _handleBlur(e) {
         this.props.onExit(this.props.cell, this.state.value);
     }
 }
