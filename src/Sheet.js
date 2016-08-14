@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { range, max, referenceMatch } from './Utils';
+import { range, max } from './CollectionUtils';
+import { referenceMatch } from './Utils';
 
 import { LabelColumn } from './LabelColumn';
 import { ValueColumn } from './ValueColumn';
@@ -32,12 +33,12 @@ export class Sheet extends Component {
         key={i}
         cells={cells}
         header={x}
-        onCellClick={this.handleCellClick}        
+        onCellClick={this.handleCellClick}
         onCellExit={this.handleCellExit} />
     });
 
     return (
-      <div className="sheet">
+      <div className="Sheet">
         <LabelColumn labels={yRange} />
         {valueColumns}
       </div>
@@ -66,27 +67,19 @@ export class Sheet extends Component {
         enteredCellReference: cell.reference
       });
     } else {
-      this.setState({ 
+      this.setState({
         selectedCellReference: cell.reference,
-        enteredCellReference: {} 
+        enteredCellReference: {}
       });
     }
   }
 
   handleCellExit(cell, value) {
-    // todo: remove all this console logging
-    console.log('cell', cell);
-    console.log('value', value);
     this.setState({
-      selectedCellReference: {},
       enteredCellReference: {}
     });
     const { x, y } = cell.reference;
-    
-    console.log('data before', this.props.data);
-    console.log('before', this.props.data.getCell(x, y));
+
     this.props.data.setCellValue(cell.reference, value)
-    console.log('after', this.props.data.getCell(x, y));
-    console.log('data after', this.props.data);
   }
 }
