@@ -1,6 +1,6 @@
 import { flatMap } from './CollectionUtils';
 
-export class SheetData {
+export class SheetStore {
     constructor() {
         this._cellDict = {};
         this._initCellData();

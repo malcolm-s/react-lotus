@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { range, max } from './CollectionUtils';
 import { referenceMatch } from './Utils';
+import { SheetAdapter } from './SheetAdapter';
 
 import { LabelColumn } from './LabelColumn';
 import { ValueColumn } from './ValueColumn';
@@ -20,44 +20,28 @@ export class Sheet extends Component {
     this.handleCellExit = this.handleCellExit.bind(this);
   }
 
+  componentWillMount() {
+    this.adapter = new SheetAdapter(this.props.store);
+  }
+
   render() {
-    const data = this.props.data;
+    const columns = this.adapter.getColumns(this.state.selectedCellReference, this.state.enteredCellReference);
 
-    const xRange = range(max(data.cells.map(c => parseInt(c.reference.x))));
-    const yRange = range(max(data.cells.map(c => parseInt(c.reference.y))));
-
-    const valueColumns = xRange.map((x, i) => {
-      const cells = this.getColumnCells(x, yRange);
-
-      return <ValueColumn
-        key={i}
-        cells={cells}
-        header={x}
+    const valueColumns = columns.map(column =>
+      <ValueColumn
+        key={column.label}
+        cells={column.cells}
+        header={column.label}
         onCellClick={this.handleCellClick}
         onCellExit={this.handleCellExit} />
-    });
+    );
 
     return (
       <div className="Sheet">
-        <LabelColumn labels={yRange} />
+        <LabelColumn labels={this.adapter.getYRange() } />
         {valueColumns}
       </div>
     )
-  }
-
-  getColumnCells(x, yRange) {
-    // todo: move this up a layer so this component just gets the full list of cells with selected/entered
-    // that component should manage the extending of cell state to include UI related things i.e. selected/entered
-    return yRange.map(y => {
-      const reference = { x, y };
-      let cell = this.props.data.getCell(reference) || { reference };
-
-      cell.isSelected = referenceMatch(cell.reference, this.state.selectedCellReference);
-
-      cell.isEntered = referenceMatch(cell.reference, this.state.enteredCellReference);
-
-      return cell;
-    });
   }
 
   handleCellClick(cell) {
@@ -78,6 +62,6 @@ export class Sheet extends Component {
       enteredCellReference: {}
     });
 
-    this.props.data.setCellValue(cell.reference, value)
+    this.props.store.setCellValue(cell.reference, value)
   }
 }

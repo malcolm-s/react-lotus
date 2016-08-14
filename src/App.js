@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { SheetData } from './SheetData';
+import { SheetStore } from './SheetStore';
 import { Sheet } from './Sheet';
 
 export class App extends Component {
   render() {
-    let sheetData = new SheetData();
+    const store = new SheetStore();
 
     return (
-      <Sheet data={sheetData} />
+      <Sheet store={store} />
     );
   }
 }
