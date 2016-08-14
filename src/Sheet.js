@@ -77,7 +77,6 @@ export class Sheet extends Component {
     this.setState({
       enteredCellReference: {}
     });
-    const { x, y } = cell.reference;
 
     this.props.data.setCellValue(cell.reference, value)
   }
