@@ -37,10 +37,7 @@ export class SheetData {
         );
     }
 
-    setCellValue(reference, value) {
-        // todo: decide on (reference) vs (x, y) format of access methods
-        const { x, y } = reference;
-
+    setCellValue({ x, y }, value) {
         if (!this._cellDict[x]) {
             this._cellDict[x] = {};
         }
@@ -50,7 +47,7 @@ export class SheetData {
         };
     }
 
-    getCell(x, y) {
+    getCell({ x, y }) {
         const existing = (this._cellDict[x] || {})[y];
 
         if (existing) {

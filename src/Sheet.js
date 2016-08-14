@@ -49,9 +49,8 @@ export class Sheet extends Component {
     // todo: move this up a layer so this component just gets the full list of cells with selected/entered
     // that component should manage the extending of cell state to include UI related things i.e. selected/entered
     return yRange.map(y => {
-      let cell = this.props.data.getCell(x, y) || {
-        reference: { x, y }
-      };
+      const reference = { x, y };
+      let cell = this.props.data.getCell(reference) || { reference };
 
       cell.isSelected = referenceMatch(cell.reference, this.state.selectedCellReference);
 
