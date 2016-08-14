@@ -1,6 +1,12 @@
+import { flatMap } from './CollectionUtils';
+
 export class SheetData {
     constructor() {
-        // todo: separate the populating of this data into a separate method so it's easier to move on from
+        this._cellDict = {};
+        this._initCellData();
+    }
+
+    _initCellData() {
         this._cellDict = {
             1: {
                 2: {
@@ -15,13 +21,12 @@ export class SheetData {
                     value: 1
                 }
             }
-        }
+        };
     }
 
     get cells() {
-        // todo: implement flatMap array operator to make this more readable and sane
-        return Object.keys(this._cellDict)
-            .map(x => Object.keys(this._cellDict[x])
+        return flatMap(Object.keys(this._cellDict),
+            x => Object.keys(this._cellDict[x])
                 .map(y => ({
                     reference: {
                         x,
@@ -29,8 +34,7 @@ export class SheetData {
                     },
                     data: this._cellDict[x][y]
                 }))
-            )
-            .reduce((prev, curr) => prev.concat(curr), []);
+        );
     }
 
     setCellValue(reference, value) {
@@ -59,12 +63,5 @@ export class SheetData {
         } else {
             return undefined;
         }
-    }
-
-    // todo: remove this, it's unused
-    getCellValue(x, y) {
-        const cell = this.getCell(x, y);
-
-        return cell === undefined ? cell : cell.value;
     }
 }
