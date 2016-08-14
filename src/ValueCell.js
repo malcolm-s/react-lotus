@@ -22,7 +22,7 @@ export class ValueCell extends Component {
         });
 
         return (
-            <div className={classNames} onClick={this.props.onClick}>
+            <div className={classNames} onClick={() => this.props.onCellClick(this.props.cell)}>
                 { this.props.isEntered
                     ? this._renderInput()
                     : this._renderValue() }
@@ -51,11 +51,11 @@ export class ValueCell extends Component {
 
     _handleKeyUp(e) {
         if (e.key === 'Enter') {
-            this.props.onExit(this.props.cell, this.state.value);
+            this.props.onCellExit(this.props.cell, this.state.value);
         }
     }
 
     _handleBlur(e) {
-        this.props.onExit(this.props.cell, this.state.value);
+        this.props.onCellExit(this.props.cell, this.state.value);
     }
 }
