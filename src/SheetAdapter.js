@@ -6,16 +6,24 @@ export class SheetAdapter {
         this.store = store;
     }
 
-    _getXRange() {
-        return range(max(this.store.cells.map(c => parseInt(c.reference.x, 10))));
+    getXMax() {
+        return max(this.store.cells.map(c => parseInt(c.reference.x, 10)));
+    }
+
+    getYMax() {
+        return max(this.store.cells.map(c => parseInt(c.reference.y, 10)));
+    }
+
+    getXRange() {
+        return range(this.getXMax());
     }
 
     getYRange() {
-        return range(max(this.store.cells.map(c => parseInt(c.reference.y, 10))));
+        return range(this.getYMax());
     }
 
     getColumns(selectedCellReference, enteredCellReference) {
-        return this._getXRange().map(x => ({
+        return this.getXRange().map(x => ({
             label: x,
             cells: this.getYRange().map(y => {
                 const reference = { x, y };

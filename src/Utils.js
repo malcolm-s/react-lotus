@@ -12,3 +12,7 @@ export function referenceMatch(reference1, reference2) {
   return reference1.x === reference2.x
     && reference1.y === reference2.y
 }
+
+export function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
