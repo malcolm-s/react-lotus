@@ -32,7 +32,7 @@ export class SheetData {
                         x,
                         y
                     },
-                    data: this._cellDict[x][y]
+                    ...this._cellDict[x][y]
                 }))
         );
     }
@@ -53,8 +53,6 @@ export class SheetData {
         if (existing) {
             return {
                 reference: { x, y },
-                // todo: this line makes the structure of the data inconsistent with how it's consumed
-                // for now maybe better just to keep it same? cell.data.value rather than cell.value
                 ...existing
             }
         } else {
