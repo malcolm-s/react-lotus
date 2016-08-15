@@ -1,111 +1,117 @@
 import React, { Component } from 'react';
-import { referenceMatch, isEmpty } from './Utils';
-import { SheetAdapter } from './SheetAdapter';
+import Rx from 'rxjs';
+import { referenceMatch } from './Utils';
 
 import { LabelColumn } from './LabelColumn';
 import { ValueColumn } from './ValueColumn';
 
 import './Sheet.css';
 
+function isKeyMovement(e) {
+    return ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].indexOf(e.key) !== -1;
+}
+
+function isWithinBounds(reference, xMax, yMax) {
+    return reference.x <= xMax
+        && reference.y <= yMax
+        && reference.y > 0
+        && reference.x > 0;
+}
+
 export class Sheet extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      selectedCellReference: {},
-      enteredCellReference: {}
-    };
+        this.state = {
+            selectedCellReference: {
+                x: 1,
+                y: 1
+            },
+            enteredCellReference: {}
+        };
 
-    this._handleCellClick = this._handleCellClick.bind(this);
-    this._handleCellExit = this._handleCellExit.bind(this);
-    this._handleKeyUp = this._handleKeyUp.bind(this)
-  }
+        this._handleCellClick = this._handleCellClick.bind(this);
+        this._handleCellExit = this._handleCellExit.bind(this);
 
-  componentWillMount() {
-    this.adapter = new SheetAdapter(this.props.store);
-    window.addEventListener('keyup', this._handleKeyUp);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keyup', this._handleKeyUp)
-  }
-
-  _handleKeyUp(e) {
-    if (isEmpty(this.state.selectedCellReference)) {
-      this.setState({ selectedCellReference: { x: 1, y: 1}});
-      return;
+        this.subscriptions = new Rx.Subscription();
     }
 
-    const handlers = {
-      'ArrowLeft': ({ x, y }) => ({ x: x - 1, y }),
-      'ArrowRight': ({ x, y }) => ({ x: x + 1, y }),
-      'ArrowUp': ({ x, y }) => ({ x, y: y - 1 }),
-      'ArrowDown': ({ x, y }) => ({ x, y: y + 1 })
-    };
+    componentWillMount() {
+        this._initialiseKeyHandlers();
 
-    const controlHandlers = {
-      'ArrowLeft': ({ x, y }) => ({ x: 1, y }),
-      'ArrowRight': ({ x, y }) => ({ x: this.adapter.getXMax(), y }),
-      'ArrowUp': ({ x, y }) => ({ x, y: 1 }),
-      'ArrowDown': ({ x, y }) => ({ x, y: this.adapter.getYMax() })
-    };
-    
-    const handler = e.ctrlKey ? controlHandlers[e.key] : handlers[e.key];
+        const [ctrlKeyDowns, normalKeyDowns] = Rx.Observable.fromEvent(document, 'keydown')
+            .filter(isKeyMovement)
+            .partition(e => e.ctrlKey);
 
-    // todo: worth getting Rx at this stage? handle both of these if statements more cleanly
-    // also definitely need for hold-down functionality
-    if (handler) {
-      const newReference = handler(this.state.selectedCellReference);
-      const withinBounds = 
-        newReference.x <= this.adapter.getXRange().length
-        && newReference.y <= this.adapter.getYRange().length
-        && newReference.y > 0
-        && newReference.x > 0;
+        const keyMovements = normalKeyDowns
+            .map(this._handleKeyMovement.bind(this))
+            .filter(reference => isWithinBounds(reference, this.props.adapter.getXMax(), this.props.adapter.getYMax()));
 
-      if (withinBounds) {
-        this.setState({ selectedCellReference: newReference });
-      }
+        const ctrlKeyMovements = ctrlKeyDowns
+            .map(this._handleCtrlKeyMovement.bind(this));
+
+        this.subscriptions.add(Rx.Observable.merge(keyMovements, ctrlKeyMovements)
+            .subscribe(reference => this.setState({ selectedCellReference: reference })));
     }
-  }
 
-  render() {
-    const columns = this.adapter.getColumns(this.state.selectedCellReference, this.state.enteredCellReference);
-
-    const valueColumns = columns.map(column =>
-      <ValueColumn
-        key={column.label}
-        cells={column.cells}
-        header={column.label}
-        onCellClick={this._handleCellClick}
-        onCellExit={this._handleCellExit} />
-    );
-
-    return (
-      <div className="Sheet">
-        <LabelColumn labels={this.adapter.getYRange() } />
-        {valueColumns}
-      </div>
-    )
-  }
-
-  _handleCellClick(cell) {
-    if (referenceMatch(cell.reference, this.state.selectedCellReference)) {
-      this.setState({
-        enteredCellReference: cell.reference
-      });
-    } else {
-      this.setState({
-        selectedCellReference: cell.reference,
-        enteredCellReference: {}
-      });
+    componentWillUnmount() {
+        this.subscriptions.unsubscribe();
     }
-  }
 
-  _handleCellExit(cell, value) {
-    this.setState({
-      enteredCellReference: {}
-    });
+    _initialiseKeyHandlers() {
+        this.normalKeyHandlers = {
+            'ArrowLeft': ({ x, y }) => ({ x: x - 1, y }),
+            'ArrowRight': ({ x, y }) => ({ x: x + 1, y }),
+            'ArrowUp': ({ x, y }) => ({ x, y: y - 1 }),
+            'ArrowDown': ({ x, y }) => ({ x, y: y + 1 })
+        };
 
-    this.props.store.setCellValue(cell.reference, value)
-  }
+        this.ctrlKeyHandlers = {
+            'ArrowLeft': ({ x, y }) => ({ x: 1, y }),
+            'ArrowRight': ({ x, y }) => ({ x: this.props.adapter.getXMax(), y }),
+            'ArrowUp': ({ x, y }) => ({ x, y: 1 }),
+            'ArrowDown': ({ x, y }) => ({ x, y: this.props.adapter.getYMax() })
+        };
+    }
+
+    _handleKeyMovement(e) {
+        return this.normalKeyHandlers[e.key](this.state.selectedCellReference);
+    }
+
+    _handleCtrlKeyMovement(e) {
+        return this.ctrlKeyHandlers[e.key](this.state.selectedCellReference);
+    }
+
+    render() {
+        const columns = this.props.adapter.getColumns(this.state.selectedCellReference, this.state.enteredCellReference);
+
+        const valueColumns = columns.map(column =>
+            <ValueColumn
+                key={column.label}
+                cells={column.cells}
+                header={column.label}
+                onCellClick={this._handleCellClick}
+                onCellExit={this._handleCellExit}/>
+        );
+
+        return (
+            <div className="Sheet">
+                <LabelColumn labels={this.props.adapter.getYRange() }/> {valueColumns}
+            </div>
+        )
+    }
+
+    _handleCellClick(cell) {
+        if (referenceMatch(cell.reference, this.state.selectedCellReference)) {
+            this.setState({ enteredCellReference: cell.reference });
+        } else {
+            this.setState({ selectedCellReference: cell.reference, enteredCellReference: {} });
+        }
+    }
+
+    _handleCellExit(cell, value) {
+        this.setState({ enteredCellReference: {} });
+
+        this.props.store.setCellValue(cell.reference, value)
+    }
 }
