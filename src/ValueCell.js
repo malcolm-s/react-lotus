@@ -41,7 +41,7 @@ export class ValueCell extends Component {
             value={this.state.value}
             ref={el => el ? el.focus() : undefined}
             onChange={this._handleChange.bind(this) }
-            onKeyUp={this._handleKeyUp.bind(this) }
+            onKeyDown={this._handleKeyDown.bind(this) }
             onBlur={this._handleBlur.bind(this) } />;
     }
 
@@ -49,7 +49,7 @@ export class ValueCell extends Component {
         this.setState({ value: e.target.value });
     }
 
-    _handleKeyUp(e) {
+    _handleKeyDown(e) {
         if (e.key === 'Enter') {
             this.props.onCellExit(this.props.cell, this.state.value);
         }

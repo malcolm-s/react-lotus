@@ -35,6 +35,7 @@ export class Sheet extends Component {
     }
 
     componentWillMount() {
+        // movement around sheet
         this._initialiseKeyHandlers();
 
         const [ctrlKeyDowns, normalKeyDowns] = keydowns
@@ -48,8 +49,18 @@ export class Sheet extends Component {
         const ctrlKeyMovements = ctrlKeyDowns
             .map(this._handleCtrlKeyMovement.bind(this));
 
-        this.subscriptions.add(Rx.Observable.merge(keyMovements, ctrlKeyMovements)
-            .subscribe(reference => this.setState({ selectedCellReference: reference })));
+        const movementSubscription = Rx.Observable.merge(keyMovements, ctrlKeyMovements)
+            .subscribe(reference => this.setState({ selectedCellReference: reference }));
+
+        this.subscriptions.add(movementSubscription);
+
+        // entering a cell
+        const enterKeySubscription = keydowns
+            .filter(and(e => e.key === 'Enter', not(isInputEvent)))
+            .subscribe(() =>
+                this.setState(current => ({ enteredCellReference: current.selectedCellReference })));
+
+        this.subscriptions.add(enterKeySubscription);
     }
 
     componentWillUnmount() {
