@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import Rx from 'rxjs';
 import { referenceMatch } from './Utils';
+import { keydowns, isKeyMovementEvent, isInputEvent } from './GlobalKeyEvents';
+import { and, not } from './FunctionUtils';
 
 import { LabelColumn } from './LabelColumn';
 import { ValueColumn } from './ValueColumn';
 
 import './Sheet.css';
-
-function isKeyMovement(e) {
-    return ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].indexOf(e.key) !== -1;
-}
 
 function isWithinBounds(reference, xMax, yMax) {
     return reference.x <= xMax
@@ -39,8 +37,8 @@ export class Sheet extends Component {
     componentWillMount() {
         this._initialiseKeyHandlers();
 
-        const [ctrlKeyDowns, normalKeyDowns] = Rx.Observable.fromEvent(document, 'keydown')
-            .filter(isKeyMovement)
+        const [ctrlKeyDowns, normalKeyDowns] = keydowns
+            .filter(and(isKeyMovementEvent, not(isInputEvent)))
             .partition(e => e.ctrlKey);
 
         const keyMovements = normalKeyDowns
