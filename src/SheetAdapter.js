@@ -1,4 +1,4 @@
-import { range, max } from './CollectionUtils';
+import { range, maxOrDefault } from './CollectionUtils';
 import { referenceMatch } from './Utils';
 
 const X_DIRECTION_BUFFER = 5;
@@ -10,11 +10,11 @@ export class SheetAdapter {
     }
 
     getXMax() {
-        return max(this.store.cells.map(c => parseInt(c.reference.x, 10))) + X_DIRECTION_BUFFER;
+        return maxOrDefault(this.store.cells.map(c => parseInt(c.reference.x, 10))) + X_DIRECTION_BUFFER;
     }
 
     getYMax() {
-        return max(this.store.cells.map(c => parseInt(c.reference.y, 10))) + Y_DIRECTION_BUFFER;
+        return maxOrDefault(this.store.cells.map(c => parseInt(c.reference.y, 10))) + Y_DIRECTION_BUFFER;
     }
 
     getXRange() {

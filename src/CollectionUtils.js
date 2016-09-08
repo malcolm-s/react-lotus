@@ -1,11 +1,18 @@
 export function range(n) {
-  let result = [];
+    let result = [];
 
-  for (var index = 1; index <= n; index++) {
-    result.push(index);
-  }
+    for (var index = 1; index <= n; index++) {
+        result.push(index);
+    }
 
-  return result;
+    return result;
+}
+
+export function maxOrDefault(array) {
+    if (array.length === 0)
+        return 0;
+
+    return max(array);
 }
 
 export function max(array) {

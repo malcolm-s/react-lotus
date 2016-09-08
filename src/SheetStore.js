@@ -1,27 +1,10 @@
 import { flatMap } from './CollectionUtils';
 
+const STORAGE_KEY = 'cells';
+
 export class SheetStore {
     constructor() {
-        this._cellDict = {};
-        this._initCellData();
-    }
-
-    _initCellData() {
-        this._cellDict = {
-            1: {
-                2: {
-                    value: 3
-                },
-                7: {
-                    value: 1
-                }
-            },
-            5: {
-                1: {
-                    value: 1
-                }
-            }
-        };
+        this._cellDict = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
     }
 
     get cells() {
@@ -45,6 +28,8 @@ export class SheetStore {
         this._cellDict[x][y] = {
             value
         };
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(this._cellDict));
     }
 
     getCell({ x, y }) {
