@@ -4,7 +4,7 @@ import { LabelCell } from './LabelCell';
 export class LabelColumn extends Component {
   render() {
     return  (
-      <div className="label-column">
+      <div>
         <LabelCell />
         {this.props.labels.map((l, i) => <LabelCell key={i} label={l} />)}
       </div>

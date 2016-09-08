@@ -105,7 +105,8 @@ export class Sheet extends Component {
 
         return (
             <div className="Sheet">
-                <LabelColumn labels={this.props.adapter.getYRange() }/> {valueColumns}
+                <LabelColumn labels={this.props.adapter.getYRange() }/>
+                {valueColumns}
             </div>
         )
     }
