@@ -13,7 +13,6 @@ export class ValueColumn extends Component {
             cell={cell}
             onCellClick={this.props.onCellClick}
             onCellExit={this.props.onCellExit}
-            value={cell.value}
             isSelected={cell.isSelected}
             isEntered={cell.isEntered} />
         ) }

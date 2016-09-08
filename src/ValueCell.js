@@ -31,7 +31,7 @@ export class ValueCell extends Component {
     }
 
     _renderValue() {
-        return this.props.value || UNICODE_BLANK;
+        return this.props.cell.displayValue || UNICODE_BLANK;
     }
 
     _renderInput() {

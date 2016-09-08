@@ -51,6 +51,11 @@ export class SheetAdapter {
                 cell.isSelected = referenceMatch(cell.reference, selectedCellReference);
                 cell.isEntered = referenceMatch(cell.reference, enteredCellReference);
 
+                // display value
+                if (cell.value) {
+                    cell.displayValue = this.store.getDisplayValue(cell);
+                }
+
                 return cell;
             })
         }));
