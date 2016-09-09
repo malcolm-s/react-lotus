@@ -1,24 +1,8 @@
 import { range, maxOrDefault } from './CollectionUtils';
-import { referenceMatch } from './Utils';
+import { referenceMatch, asXLabel } from './CellReferenceUtils';
 
 const X_DIRECTION_BUFFER = 5;
 const Y_DIRECTION_BUFFER = X_DIRECTION_BUFFER;
-
-function convertToLetterLabel(n) {
-    const factor = n / 26;
-
-    if (factor > 1) {
-        const roundedFactor = Math.floor(factor);
-
-        const initialLetter = String.fromCharCode(96 + roundedFactor); 
-
-        const finalLetter = String.fromCharCode(97 + n - (26 * roundedFactor));
-
-        return (initialLetter + finalLetter).toUpperCase();
-    }
-
-    return String.fromCharCode(96 + n).toUpperCase();
-}
 
 export class SheetAdapter {
     constructor(store) {
@@ -43,7 +27,7 @@ export class SheetAdapter {
 
     getColumns(selectedCellReference, enteredCellReference) {
         return this.getXRange().map(x => ({
-            label: convertToLetterLabel(x),
+            label: asXLabel(x),
             cells: this.getYRange().map(y => {
                 const reference = { x, y };
                 let cell = this.store.getCell(reference) || { reference };

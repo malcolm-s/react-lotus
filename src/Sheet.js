@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Rx from 'rxjs';
-import { referenceMatch } from './Utils';
+import { referenceMatch } from './CellReferenceUtils';
 import { keydowns, isKeyMovementEvent, isInputEvent } from './GlobalKeyEvents';
 import { and, not } from './FunctionUtils';
 
