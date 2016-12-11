@@ -1,3 +1,7 @@
-.Sheet {
+.Sheet__columns {
   display: flex;
+}
+
+.Sheet__display-box {
+  min-height: 2em;
 }

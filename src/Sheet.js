@@ -103,12 +103,19 @@ export class Sheet extends Component {
                 onCellExit={this._handleCellExit}/>
         );
 
+        const selectedCell = this.props.adapter.getCell(this.state.selectedCellReference);
+
         return (
             <div className="Sheet">
-                <LabelColumn labels={this.props.adapter.getYRange() }/>
-                {valueColumns}
+                <div className="Sheet__display-box">
+                    {selectedCell ? selectedCell.value : null}
+                </div>
+                <div className="Sheet__columns">
+                    <LabelColumn labels={this.props.adapter.getYRange() }/>
+                    {valueColumns}
+                </div>
             </div>
-        )
+        );
     }
 
     _handleCellClick(cell) {
@@ -122,6 +129,6 @@ export class Sheet extends Component {
     _handleCellExit(cell, value) {
         this.setState({ enteredCellReference: {} });
 
-        this.props.store.setCellValue(cell.reference, value)
+        this.props.adapter.setCellValue(cell.reference, value);
     }
 }

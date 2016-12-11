@@ -44,4 +44,12 @@ export class SheetAdapter {
             })
         }));
     }
+
+    getCell(reference) {
+        return this.store.getCell(reference);
+    }
+
+    setCellValue(reference, value) {
+        this.store.setCellValue(reference, value);
+    }
 }

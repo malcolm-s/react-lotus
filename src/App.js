@@ -9,7 +9,7 @@ export class App extends Component {
     const adapter = new SheetAdapter(store);
 
     return (
-      <Sheet store={store} adapter={adapter} />
+      <Sheet adapter={adapter} />
     );
   }
 }
