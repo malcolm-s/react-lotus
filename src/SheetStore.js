@@ -1,11 +1,12 @@
 import { flatMap } from './CollectionUtils';
-import { referenceMatch, fromStringReference } from './CellReferenceUtils';
+import { referenceMatch, fromStringReference, asXLabel } from './CellReferenceUtils';
 
 const STORAGE_KEY = 'cells';
 
 export class SheetStore {
-    constructor() {
+    constructor(cellParser) {
         this._cellDict = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        this._cellParser = cellParser;
     }
 
     get cells() {
@@ -40,33 +41,33 @@ export class SheetStore {
             return {
                 reference: { x, y },
                 ...existing
-            }
+            };
         } else {
             return undefined;
         }
     }
 
     getDisplayValue(cell) {
-        const value = cell.value;
+        /*
+        Parse cell content and convert it into a CellContentDescriptor, which can be of type:
+            'value'
+            'expression'
+        SheetStore then gets display value based on descriptor:
+            'value' -> return the value
+            'expression' -> recursive data structure, oh ma lord!
+         */
+        console.log(`${asXLabel(cell.reference.x)}${cell.reference.y}`);
+        const expression = this._cellParser.parse(cell.value);
 
-        if (value.startsWith('=')) {
-            // it's a reference
-            const otherCellReference = fromStringReference(value.substring(1));
+        return this._evaluateCellExpression(expression);
+    }
 
-            if (referenceMatch(cell.reference, otherCellReference)) {
-                return 'cyclic references';
-            }
+    _evaluateCellExpression(expression) {
+        const type = expression.type;
+        if (type === 'constant') {
+            return expression.value;
+        } else if (type === 'reference') {
 
-            const otherCell = this.getCell(otherCellReference);
-
-            if (otherCell) {
-                return this.getDisplayValue(otherCell);
-            } else {
-                return 'not found';
-            }
-        } else {
-            // it's a simple value
-            return value;
         }
     }
 }

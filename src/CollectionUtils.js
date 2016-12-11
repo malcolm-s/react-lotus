@@ -24,3 +24,13 @@ export function flatMap(array, selector) {
         .map(i => selector(i))
         .reduce((prev, curr) => prev.concat(curr), []);
 }
+
+export function isAnyOf(array, value) {
+    for (let item of array) {
+        if (value === item) {
+            return true;
+        }
+    }
+
+    return false;
+}
