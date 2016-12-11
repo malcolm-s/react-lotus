@@ -1,4 +1,5 @@
 import { isAnyOf } from './CollectionUtils';
+import { isReference } from './CellReferenceUtils';
 
 const _operators = ['=', '+'];
 
@@ -6,31 +7,15 @@ export class CellParser {
 
     parse(value) {
         const tokens = this._tokenise(value);
-        console.log('tokens', tokens);
-        if (value.startsWith('=')) {
-            // // it's a reference
-            // const otherCellReference = fromStringReference(value.substring(1));
+        const ast = this._lexify(tokens);
 
-            // if (referenceMatch(cell.reference, otherCellReference)) {
-            //     return 'cyclic references';
-            // }
-
-            // const otherCell = this.getCell(otherCellReference);
-
-            // if (otherCell) {
-            //     return this.getDisplayValue(otherCell);
-            // } else {
-            //     return 'not found';
-            // }
-            return { type: 'expression' }
-        } else {
-            // it's a simple value
-            return { type: 'constant', value };
-        }
+        console.log('ast', ast);
+        return ast;
     }
 
     _tokenise(value) {
         let tokens = [];
+        // yikes...
         let upToNow = "";
 
         for (let i = 0; i < value.length; i++) {
@@ -49,5 +34,30 @@ export class CellParser {
         tokens.push(upToNow);
 
         return tokens;
+    }
+
+    _lexify(tokens) {
+        // things to add
+        // parentheses
+        // strings
+        // floating point numbers
+        if (tokens[0] === '=') {
+            let root = { type: 'expression', children: [] };
+            let remaining = tokens.splice(1);
+
+            for (let token of remaining) {
+                if (isReference(token)) {
+                    root.children.push({ type: 'reference', value: token });
+                } else if (/[0-9]+/.test(token)) {
+                    root.children.push({ type: 'constant', value: token });
+                } else {
+                    root.children.push({ type: 'function', value: token });
+                }
+            }
+
+            return root;
+        } else {
+            return { type: 'constant', value: tokens[0] };
+        }
     }
 }

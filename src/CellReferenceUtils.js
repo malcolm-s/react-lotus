@@ -38,3 +38,7 @@ export function referenceMatch(reference1, reference2) {
     return reference1.x === reference2.x
         && reference1.y === reference2.y
 }
+
+export function isReference(str) {
+    return /^([a-z])+([0-9])+$/i.test(str);
+}

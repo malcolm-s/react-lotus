@@ -59,15 +59,31 @@ export class SheetStore {
         console.log(`${asXLabel(cell.reference.x)}${cell.reference.y}`);
         const expression = this._cellParser.parse(cell.value);
 
-        return this._evaluateCellExpression(expression);
+        return this._evaluateExpression(expression);
     }
 
-    _evaluateCellExpression(expression) {
+    _evaluateExpression(expression) {
         const type = expression.type;
         if (type === 'constant') {
             return expression.value;
-        } else if (type === 'reference') {
-
+        } else if (type === 'expression') {
+            let value = expression.children.reduce(this._evaluate.bind(this), {});
+            console.log('evaluated', value);
+            return value;
         }
+    }
+
+    _evaluate(context, next) {
+        console.log('curr', context);
+        console.log('next', next);
+
+        if (next.type === 'reference') {
+            // cyclic references
+            const reference = fromStringReference(next.value);
+            const cell = this.getCell(reference);
+
+            return this.getDisplayValue(cell);
+        }
+        return next;
     }
 }
