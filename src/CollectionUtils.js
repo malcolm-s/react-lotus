@@ -16,11 +16,11 @@ export function maxOrDefault(array) {
 }
 
 export function max(array) {
-  return array.reduce((prev, curr) => curr > prev ? curr : prev);
+    return array.reduce((prev, curr) => curr > prev ? curr : prev);
 }
 
 export function flatMap(array, selector) {
-  return array
-    .map(i => selector(i))
-    .reduce((prev, curr) => prev.concat(curr), []);
+    return array
+        .map(i => selector(i))
+        .reduce((prev, curr) => prev.concat(curr), []);
 }
