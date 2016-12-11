@@ -5,11 +5,11 @@ import './Cell.css';
 import './LabelCell.css';
 
 export class LabelCell extends Component {
-  render() {
-    return (
-      <div className="Cell LabelCell">
-        {this.props.label || UNICODE_BLANK}
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="Cell LabelCell">
+                {this.props.label || UNICODE_BLANK}
+            </div>
+        );
+    }
 }

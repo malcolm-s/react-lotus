@@ -4,12 +4,12 @@ import { SheetAdapter } from './SheetAdapter';
 import { Sheet } from './Sheet';
 
 export class App extends Component {
-  render() {
-    const store = new SheetStore();
-    const adapter = new SheetAdapter(store);
+    render() {
+        const store = new SheetStore();
+        const adapter = new SheetAdapter(store);
 
-    return (
-      <Sheet adapter={adapter} />
-    );
-  }
+        return (
+            <Sheet adapter={adapter} />
+        );
+    }
 }
