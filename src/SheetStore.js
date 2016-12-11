@@ -58,8 +58,10 @@ export class SheetStore {
          */
         console.log(`${asXLabel(cell.reference.x)}${cell.reference.y}`);
         const expression = this._cellParser.parse(cell.value);
+        const evaluated = this._evaluateExpression(expression);
+        console.log('evaluated value', evaluated);
 
-        return this._evaluateExpression(expression);
+        return evaluated;
     }
 
     _evaluateExpression(expression) {
@@ -67,9 +69,13 @@ export class SheetStore {
         if (type === 'constant') {
             return expression.value;
         } else if (type === 'expression') {
-            let value = expression.children.reduce(this._evaluate.bind(this), {});
-            console.log('evaluated', value);
-            return value;
+            let context = expression.children.reduce(this._evaluate.bind(this), { });
+            console.log('evaluated context', context);
+            if (context.fn) {
+                context.value = context.fn.apply(this, context.args);
+            }
+            console.log('evaluated context', context);
+            return context.value;
         }
     }
 
@@ -77,13 +83,31 @@ export class SheetStore {
         console.log('curr', context);
         console.log('next', next);
 
-        if (next.type === 'reference') {
+        if (next.type === 'constant') {
+            if (context.fn) {
+                context.args.push(next.value);
+            } else {
+                context.value = next.value;
+            }
+        } else if (next.type === 'reference') {
             // cyclic references
             const reference = fromStringReference(next.value);
             const cell = this.getCell(reference);
+            const value = this.getDisplayValue(cell);
 
-            return this.getDisplayValue(cell);
+            if (context.fn) {
+                context.args.push(value);
+            } else {
+                context.value = value;
+            }
+        } else if (next.type === 'function') {
+            context.args = [];
+            context.args.push(context.value);
+            context.fn = function (a, b) {
+                return parseFloat(a) + parseFloat(b);
+            };
         }
-        return next;
+
+        return context;
     }
 }
