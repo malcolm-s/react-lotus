@@ -1,7 +1,7 @@
 import { isAnyOf } from './CollectionUtils';
 import { isReference } from './CellReferenceUtils';
 
-const _operators = ['=', '+'];
+const _operators = ['=', '+', '-'];
 
 export class CellParser {
 

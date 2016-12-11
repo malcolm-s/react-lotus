@@ -1,3 +1,12 @@
+const FUNCTIONS = {
+    '+': function (a, b) {
+        return parseFloat(a) + parseFloat(b);
+    },
+    '-': function (a, b) {
+        return parseFloat(a) - parseFloat(b);
+    }
+};
+
 export class CellEvaluator {
     constructor(store) {
         this._store = store;
@@ -40,9 +49,7 @@ export class CellEvaluator {
         } else if (next.type === 'function') {
             context.args = [];
             context.args.push(context.value);
-            context.fn = function (a, b) {
-                return parseFloat(a) + parseFloat(b);
-            };
+            context.fn = FUNCTIONS[next.value];
         }
 
         return context;
