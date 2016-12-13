@@ -8,8 +8,6 @@ export class CellParser {
     parse(value) {
         const tokens = this._tokenise(value);
         const ast = this._lexify(tokens);
-
-        console.log('ast', ast);
         return ast;
     }
 
