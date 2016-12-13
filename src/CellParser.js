@@ -8,7 +8,12 @@ export class CellParser {
     parse(value) {
         const tokens = this._tokenise(value);
         const ast = this._lexify(tokens);
-        return ast;
+        const errors = this._validate(ast);
+        if (errors) {
+            return errors;
+        } else {
+            return ast;
+        }
     }
 
     _tokenise(value) {
@@ -56,6 +61,23 @@ export class CellParser {
             return root;
         } else {
             return { type: 'constant', value: tokens[0] };
+        }
+    }
+
+    _validate(ast) {
+        if (ast.type === 'expression') {
+            const error = { type: 'error', value: 'incomplete expression' };
+            const children = ast.children;
+            
+            const firstChild = children[0];
+            if (firstChild.type === 'function') {
+                return error;
+            }
+
+            const lastChild = children[children.length - 1];
+            if (lastChild.type === 'function') {
+                return error;
+           }
         }
     }
 }

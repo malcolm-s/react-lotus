@@ -66,3 +66,43 @@ test('CellParser.parse handles references and plus operator and reference', t =>
     t.equal(ast.children[2].value, 'a1');
     t.end();
 });
+
+test('CellParser.parse handles unspecified expression', t => {
+    const parser = new CellParser();
+    const content = '=';
+    const ast = parser.parse(content);
+
+    t.equal(ast.type, 'error');
+    t.equal(ast.value, 'incomplete expression');
+    t.end();
+});
+
+test('CellParser.parse handles unfinished operator usage - missing right hand side', t => {
+    const parser = new CellParser();
+    const content = '=a1+';
+    const ast = parser.parse(content);
+
+    t.equal(ast.type, 'error');
+    t.equal(ast.value, 'incomplete expression');
+    t.end();
+});
+
+test('CellParser.parse handles unfinished operator usage - missing left hand side', t => {
+    const parser = new CellParser();
+    const content = '=+a1';
+    const ast = parser.parse(content);
+
+    t.equal(ast.type, 'error');
+    t.equal(ast.value, 'incomplete expression');
+    t.end();
+});
+
+test('CellParser.parse handles unfinished operator usage - missing both sides', t => {
+    const parser = new CellParser();
+    const content = '=+';
+    const ast = parser.parse(content);
+
+    t.equal(ast.type, 'error');
+    t.equal(ast.value, 'incomplete expression');
+    t.end();
+});
